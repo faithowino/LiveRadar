@@ -17,7 +17,13 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow LiveRadar to use your location so we can show nearby events, experiences, and activities."
+        }
+      ]
     ]
   }
 }
