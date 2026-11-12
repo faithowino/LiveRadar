@@ -26,19 +26,21 @@ export default function ExploreScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        <Text style={styles.headerTitle}>Explore</Text>
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search categories or venues..."
-          placeholderTextColor="#A0988E"
-          value={query}
-          onChangeText={setQuery}
-        />
-        <CategoryChips
-          categories={['All', 'Arts & Culture', 'Food', 'Sports & Fitness', 'Volunteering']}
-          selected={category}
-          onChange={setCategory}
-        />
+        <View style={styles.exploreHeader}>
+          <Text style={styles.headerTitle}>Explore</Text>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search categories or venues..."
+            placeholderTextColor="#A0988E"
+            value={query}
+            onChangeText={setQuery}
+          />
+          <CategoryChips
+            categories={['All', 'Arts & Culture', 'Food', 'Sports & Fitness', 'Volunteering']}
+            selected={category}
+            onChange={setCategory}
+          />
+        </View>
 
         <Text style={styles.sectionHeading}>Near You</Text>
         <FlatList
@@ -47,6 +49,16 @@ export default function ExploreScreen() {
           renderItem={({ item }) => <EventCard event={item} onPress={setSelectedEvent} />}
           ListEmptyComponent={<Text style={styles.emptyText}>No events found.</Text>}
         />
+
+        <Text style ={styles.sectionHeading}>Popular</Text>
+        <FlatList
+          data = {events}
+          keyExtractor = {(item) => item.id}
+          renderItem = {({item}) => <EventCard event = {item} onPress = {setSelectedEvent} />}
+          ListEmptyComponent = {<Text style = {styles.emptyText}>No events found.</Text>}
+        />
+      
+        
         <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       </View>
     </SafeAreaView>

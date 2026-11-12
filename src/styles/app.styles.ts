@@ -29,6 +29,11 @@ export const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  exploreHeader: {
+    zIndex: 2,
+    elevation: 2,
+    backgroundColor: '#f8f2e8',
+  },
   categoriesContainer: { paddingHorizontal: 16, paddingBottom: 12 },
   categoryChip: {
     backgroundColor: '#E8DEF8',
