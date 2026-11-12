@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Modal, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
+import { Modal, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-import type { Event } from '../../types/event';
 import { styles } from '../../styles/app.styles';
+import type { Event } from '../../types/event';
 import { useSavedEvents } from './use-saved-events';
 
 type Props = {
@@ -17,6 +17,7 @@ export function EventDetailsModal({ event, onClose }: Props) {
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const [directionsError, setDirectionsError] = useState(false);
   const isSaved = event ? savedEventIds.includes(event.id) : false;
+  const hasMoreAboutText = event ? event.about.length > 150 : false;
 
   const openDirections = async () => {
     if (!event) return;
@@ -87,34 +88,56 @@ export function EventDetailsModal({ event, onClose }: Props) {
             </View>
             <TouchableOpacity
               style={styles.infoSection}
-              onPress={() => setAboutExpanded((expanded) => !expanded)}
-              accessibilityLabel={aboutExpanded ? 'Collapse about this event' : 'Read more about this event'}
+              onPress={() => hasMoreAboutText && setAboutExpanded(true)}
+              accessibilityLabel="About this event"
             >
               <Text style={styles.detailsSectionTitle}>About this event</Text>
-              <Text style={styles.bodyText} numberOfLines={aboutExpanded ? undefined : 3}>
+              <Text style={styles.bodyText} numberOfLines={hasMoreAboutText ? 3 : undefined}>
                 {event.about}
               </Text>
-              <Text style={styles.readMoreText}>{aboutExpanded ? 'Show less' : 'Read more'}</Text>
+              {hasMoreAboutText && <Text style={styles.readMoreText}>Read more</Text>}
             </TouchableOpacity>
             <View style={styles.eventActions}>
-              <View style={styles.highlightChip}>
+              <View style={[styles.highlightChip, styles.eventActionChip]}>
                 <Text style={styles.highlightChipText}>{event.perk}</Text>
               </View>
-              <TouchableOpacity style={styles.directionsChip} onPress={openDirections}>
-                <Ionicons name="navigate-outline" size={16} color="#FFFFFF" />
-                <Text style={styles.directionsChipText}>Get directions</Text>
-              </TouchableOpacity>
+              <View style={styles.eventActionRow}>
+                <TouchableOpacity style={styles.directionsChip} onPress={openDirections}>
+                  <Ionicons name="navigate-outline" size={16} color="#FFFFFF" />
+                  <Text style={styles.directionsChipText}>Get directions</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             {directionsError && (
               <Text style={styles.locationError}>Directions are unavailable on this device.</Text>
             )}
-            <View style={styles.infoSection}>
-              <Text style={styles.sectionTitle}>More Info</Text>
-              <Text style={styles.bodyText}>{event.moreInfo}</Text>
-            </View>
           </ScrollView>
         )}
       </SafeAreaView>
+      <Modal
+        visible={aboutExpanded && event !== null}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setAboutExpanded(false)}
+      >
+        <View style={styles.aboutModalBackdrop}>
+          <View style={styles.aboutModalCard}>
+            <View style={styles.aboutModalHeader}>
+              <Text style={styles.detailsSectionTitle}>About this event</Text>
+              <TouchableOpacity
+                onPress={() => setAboutExpanded(false)}
+                accessibilityLabel="Close about this event"
+                style={styles.aboutCloseButton}
+              >
+                <Ionicons name="close" size={24} color="#2C2A29" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={styles.bodyText}>{event?.about}</Text>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
