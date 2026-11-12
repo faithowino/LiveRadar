@@ -13,6 +13,7 @@ export const SAMPLE_EVENTS: Event[] = [
     moreInfo: 'Age 21+. Free entry before 9:00 PM.',
     price: 'Free',
     age: '21+',
+    perk: 'Free entry before 9:00 PM',
   },
   {
     id: '2',
@@ -26,6 +27,7 @@ export const SAMPLE_EVENTS: Event[] = [
     moreInfo: 'Complimentary beverages provided for students with valid ID.',
     price: 'Free',
     age: 'All ages',
+    perk: 'Complimentary beverages for students',
   },
   {
     id: '3',
@@ -38,5 +40,6 @@ export const SAMPLE_EVENTS: Event[] = [
     moreInfo: 'Max 6 people per team.',
     price: 'Paid',
     age: '18+',
+    perk: 'Team prizes for the winning group',
   },
 ];

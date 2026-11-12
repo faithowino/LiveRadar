@@ -9,4 +9,5 @@ export type Event = {
   moreInfo: string;
   price: 'Free' | 'Paid';
   age: 'All ages' | '18+' | '21+';
+  perk: string;
 };
