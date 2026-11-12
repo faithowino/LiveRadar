@@ -50,6 +50,10 @@ export function RadarMap({ location, onMyLocation }: Props) {
         showsCompass
         showsUserLocation
         showsMyLocationButton={false}
+        scrollEnabled={false}
+        zoomEnabled={false}
+        rotateEnabled={false}
+        pitchEnabled={false}
       />
       <TouchableOpacity style={styles.myLocationButton} onPress={recenter}>
         <Text style={styles.myLocationButtonText}>My Location</Text>

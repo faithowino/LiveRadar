@@ -1,5 +1,6 @@
-import { FlatList, SafeAreaView, Text, TextInput } from 'react-native';
 import { useMemo, useState } from 'react';
+import { FlatList, Text, TextInput, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { SAMPLE_EVENTS } from '../../data/sample-events';
 import { styles } from '../../styles/app.styles';
@@ -23,28 +24,31 @@ export default function ExploreScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.headerTitle}>Explore</Text>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search categories or venues..."
-        placeholderTextColor="#A0988E"
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Text style={styles.headerTitle}>Explore</Text>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search categories or venues..."
+          placeholderTextColor="#A0988E"
         value={query}
         onChangeText={setQuery}
       />
-      <CategoryChips
-        categories={['All', 'Music', 'Arts', 'Community']}
-        selected={category}
-        onChange={setCategory}
-      />
-      <Text style={styles.sectionHeading}>Near You</Text>
-      <FlatList
-        data={events}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <EventCard event={item} onPress={setSelectedEvent} />}
-        ListEmptyComponent={<Text style={styles.emptyText}>No events found.</Text>}
-      />
-      <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
-    </SafeAreaView>
+       <CategoryChips
+          categories={['All', 'Arts & Culture', 'Arts', 'Food', 'Sports & Fitness']}
+          selected={category}
+          onChange={setCategory}
+          />
+
+        <Text style={styles.sectionHeading}>Near You</Text>
+        <FlatList
+          data={events}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <EventCard event={item} onPress={setSelectedEvent} />}
+          ListEmptyComponent={<Text style={styles.emptyText}>No events found.</Text>}
+        />
+        <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      </View>
+    </SafeAreaProvider>
   );
 }

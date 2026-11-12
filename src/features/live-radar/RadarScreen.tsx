@@ -1,3 +1,6 @@
+import type { ComponentRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
   Modal,
@@ -7,8 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
-import type { ComponentRef } from 'react';
 
 import { SAMPLE_EVENTS } from '../../data/sample-events';
 import { styles } from '../../styles/app.styles';
@@ -23,6 +24,7 @@ import {
   type UserLocation,
 } from './location';
 import { RadarMap } from './RadarMap';
+import { RadarPulse } from './RadarPulse';
 
 const DEFAULT_LOCATION: UserLocation = {
   latitude: 42.444,
@@ -37,6 +39,10 @@ export default function RadarScreen() {
   const [locationLoading, setLocationLoading] = useState(true);
   const [manualLocation, setManualLocation] = useState('');
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [priceFilter, setPriceFilter] = useState<'Any price' | 'Free' | 'Paid'>('Any price');
+  const [ageFilter, setAgeFilter] = useState<'Any age' | 'All ages' | '18+' | '21+'>('Any age');
+  const [radiusMiles, setRadiusMiles] = useState(10);
   const searchInputRef = useRef<ComponentRef<typeof TextInput>>(null);
 
   useEffect(() => {
@@ -110,12 +116,33 @@ export default function RadarScreen() {
     }
   };
 
+  const filteredEvents = useMemo(
+    () =>
+      SAMPLE_EVENTS.filter(
+        (event) =>
+          (category === 'All' || event.category === category) &&
+          (priceFilter === 'Any price' || event.price === priceFilter) &&
+          (ageFilter === 'Any age' || event.age === ageFilter),
+      ),
+    [ageFilter, category, priceFilter],
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mapPlaceholder}>
         <RadarMap location={location} onMyLocation={useCurrentLocation} />
+        <RadarPulse radiusMiles={radiusMiles} />
         <View style={styles.radarOverlay}>
-          <Text style={styles.headerTitle}>LiveRadar</Text>
+          <View style={styles.radarHeaderRow}>
+            <Text style={styles.headerTitle}>LiveRadar</Text>
+            <TouchableOpacity
+              accessibilityLabel="Open event filters"
+              style={styles.filterButton}
+              onPress={() => setFiltersVisible(true)}
+            >
+              <Ionicons name="options-outline" size={24} color="#E94F8A" />
+            </TouchableOpacity>
+          </View>
           <TextInput
             ref={searchInputRef}
             style={styles.searchBar}
@@ -126,20 +153,88 @@ export default function RadarScreen() {
             placeholderTextColor="#A0988E"
           />
           <CategoryChips
-            categories={['All', 'Music', 'Arts', 'Cook', 'Sports']}
+            categories={['All', 'Arts & Culture', 'Food', 'Sports & Fitness', "Volunteering", ]}
             selected={category}
             onChange={setCategory}
           />
         </View>
-        <TouchableOpacity style={styles.eventPreviewCard} onPress={() => setSelectedEvent(SAMPLE_EVENTS[0])}>
-          <Text style={styles.cardCategory}>{SAMPLE_EVENTS[0].category}</Text>
-          <Text style={styles.cardTitle}>{SAMPLE_EVENTS[0].name}</Text>
-          <Text style={styles.cardSubText}>
-            {SAMPLE_EVENTS[0].location} • {SAMPLE_EVENTS[0].time}
-          </Text>
-        </TouchableOpacity>
+        {filteredEvents[0] ? (
+          <TouchableOpacity style={styles.eventPreviewCard} onPress={() => setSelectedEvent(filteredEvents[0])}>
+            <Text style={styles.cardCategory}>{filteredEvents[0].category}</Text>
+            <Text style={styles.cardTitle}>{filteredEvents[0].name}</Text>
+            <Text style={styles.cardSubText}>
+              {filteredEvents[0].location} • {filteredEvents[0].time}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.eventPreviewCard}>
+            <Text style={styles.emptyText}>No events match these filters.</Text>
+          </View>
+        )}
       </View>
       <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+      <Modal
+        visible={filtersVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setFiltersVisible(false)}
+      >
+        <View style={styles.filterBackdrop}>
+          <View style={styles.filterCard}>
+            <View style={styles.filterTitleRow}>
+              <Text style={styles.permissionTitle}>Filter events</Text>
+              <TouchableOpacity onPress={() => setFiltersVisible(false)} accessibilityLabel="Close filters">
+                <Ionicons name="close" size={24} color="#2C2A29" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.filterLabel}>Distance</Text>
+            <View style={styles.filterOptions}>
+              {[5, 10, 25, 50].map((miles) => (
+                <TouchableOpacity
+                  key={miles}
+                  style={[styles.filterOption, radiusMiles === miles && styles.filterOptionActive]}
+                  onPress={() => setRadiusMiles(miles)}
+                >
+                  <Text style={[styles.filterOptionText, radiusMiles === miles && styles.filterOptionTextActive]}>
+                    {miles} mi
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.filterLabel}>Price</Text>
+            <View style={styles.filterOptions}>
+              {(['Any price', 'Free', 'Paid'] as const).map((price) => (
+                <TouchableOpacity
+                  key={price}
+                  style={[styles.filterOption, priceFilter === price && styles.filterOptionActive]}
+                  onPress={() => setPriceFilter(price)}
+                >
+                  <Text style={[styles.filterOptionText, priceFilter === price && styles.filterOptionTextActive]}>
+                    {price}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.filterLabel}>Age</Text>
+            <View style={styles.filterOptions}>
+              {(['Any age', 'All ages', '18+', '21+'] as const).map((age) => (
+                <TouchableOpacity
+                  key={age}
+                  style={[styles.filterOption, ageFilter === age && styles.filterOptionActive]}
+                  onPress={() => setAgeFilter(age)}
+                >
+                  <Text style={[styles.filterOptionText, ageFilter === age && styles.filterOptionTextActive]}>
+                    {age}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TouchableOpacity style={styles.permissionPrimaryButton} onPress={() => setFiltersVisible(false)}>
+              <Text style={styles.permissionPrimaryButtonText}>Apply filters</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <Modal
         visible={permissionExplanationVisible}
         transparent

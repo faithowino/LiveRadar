@@ -7,4 +7,6 @@ export type Event = {
   time: string;
   about: string;
   moreInfo: string;
+  price: 'Free' | 'Paid';
+  age: 'All ages' | '18+' | '21+';
 };
