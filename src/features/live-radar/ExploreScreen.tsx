@@ -31,14 +31,14 @@ export default function ExploreScreen() {
           style={styles.searchBar}
           placeholder="Search categories or venues..."
           placeholderTextColor="#A0988E"
-        value={query}
-        onChangeText={setQuery}
-      />
-       <CategoryChips
-          categories={['All', 'Arts & Culture', 'Arts', 'Food', 'Sports & Fitness']}
+          value={query}
+          onChangeText={setQuery}
+        />
+        <CategoryChips
+          categories={['All', 'Arts & Culture', 'Food', 'Sports & Fitness', 'Volunteering']}
           selected={category}
           onChange={setCategory}
-          />
+        />
 
         <Text style={styles.sectionHeading}>Near You</Text>
         <FlatList

@@ -33,9 +33,12 @@ export const styles = StyleSheet.create({
   categoryChip: {
     backgroundColor: '#E8DEF8',
     paddingHorizontal: 18,
-    paddingVertical: 8,
+    height: 36,
+    minWidth: 64,
     borderRadius: 20,
     marginRight: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   categoryChipActive: { backgroundColor: '#7A5CFF' },
   categoryText: { color: '#656070', fontSize: 13, fontWeight: '600' },
