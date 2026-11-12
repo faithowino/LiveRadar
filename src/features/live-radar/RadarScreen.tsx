@@ -4,12 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
   Modal,
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SAMPLE_EVENTS } from '../../data/sample-events';
 import { styles } from '../../styles/app.styles';
@@ -128,7 +128,7 @@ export default function RadarScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['top']} style={styles.container}>
       <View style={styles.mapPlaceholder}>
         <RadarMap location={location} onMyLocation={useCurrentLocation} />
         <RadarPulse radiusMiles={radiusMiles} />

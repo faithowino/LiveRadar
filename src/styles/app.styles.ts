@@ -380,6 +380,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
+  bottomSafeArea: { backgroundColor: '#FFFFFF' },
   tabButton: {
     flex: 1,
     alignItems: 'center',

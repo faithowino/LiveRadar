@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { FlatList, Text, TextInput, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SAMPLE_EVENTS } from '../../data/sample-events';
 import { styles } from '../../styles/app.styles';
@@ -24,7 +24,7 @@ export default function ExploreScreen() {
   );
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <Text style={styles.headerTitle}>Explore</Text>
         <TextInput
@@ -49,6 +49,6 @@ export default function ExploreScreen() {
         />
         <EventDetailsModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       </View>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 }
